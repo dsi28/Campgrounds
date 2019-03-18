@@ -3,21 +3,26 @@
     <h1 style='text-align: center'>Edit User</h1>
     <div class='row'>
         <div style='width: 30%; margin:30px auto'>
-            <form action='/user/<%=user._id%>?_method=PUT' method='POST'>
+            <form action='/user/<%=user._id%>?_method=PUT' method='POST' enctype='multipart/form-data'>
                 <div class='form-group'>
-                    <input class='form-control' type='text' name='user[firstname]' value='<%=user.firstname%>'/>
+                    <label for='fname'>First Name</label>
+                    <input class='form-control' type='text' name='user[firstname]' id='fname' value='<%=user.firstname%>'/>
                 </div>
                 <div class='form-group'>
-                    <input class='form-control' type='text' name='user[lastname]' value='<%=user.lastname%>'/>
+                    <label for='lname'>Last Name</label>
+                    <input class='form-control' type='text' name='user[lastname]' id='lname' value='<%=user.lastname%>'/>
                 </div>            
                 <div class='form-group'>
-                    <input class='form-control' type='text' name='user[avatar]' value='<%=user.avatar%>'/>
+                    <label for='avatar'>Profile Pic</label>
+                    <input class='form-control-file' type='file' name='avatar' id=avatar accept='image/*'/>
                 </div>
                 <div class='form-group'>
-                    <input class='form-control' type='email' name='user[email]' value='<%=user.email%>'/>
+                    <label for='email'>Email</label>
+                    <input class='form-control' type='email' name='user[email]' id='email' value='<%=user.email%>'/>
                 </div>
                 <div class='form-group'>
-                    <input class='form-control' type='text' name='user[username]' value='<%=user.username%>'/>
+                    <label for='user'>Username</label>
+                    <input class='form-control' type='text' name='user[username]' id='user' value='<%=user.username%>' readonly/>
                 </div>                 
                 <button class='btn  btn-lg btn-primary btn-block' type='submit'>Update</button>
             </form>

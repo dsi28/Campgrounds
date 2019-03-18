@@ -8,6 +8,33 @@ async = require('async'),
 nodemailer = require('nodemailer'),
 crypto = require('crypto'); 
 
+
+//image file upload config
+const multer = require('multer');
+var storage = multer.diskStorage({
+filename: function(req, file, callback) {
+    callback(null, Date.now() + file.originalname);
+}
+});
+var imageFilter = function (req, file, cb) {
+    // accept image files only
+    if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)) {
+        return cb(new Error('Only image files are allowed!'), false);
+    }
+    cb(null, true);
+};
+var upload = multer({ storage: storage, fileFilter: imageFilter})
+var cloudinary = require('cloudinary');
+cloudinary.config({ 
+cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
+api_key: process.env.CLOUDINARY_API_KEY, 
+api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+
+
+
+
 //user routes:  /user
 
 
@@ -49,16 +76,25 @@ router.get('/:id/edit', middleware.UserNotNull, (req,res)=>{
 });
 
 //update route
-router.put('/:id', middleware.UserNotNull,(req,res)=>{
-    User.findByIdAndUpdate(req.params.id,
-                           req.body.user,
-                           (err, updatedUser)=>{
+router.put('/:id', middleware.UserNotNull, upload.single('avatar'), (req,res)=>{
+  
+    User.findById(req.params.id, async(err, updatedUser)=>{
         if(err){
             console.log(err);
             req.flash('error', 'Error updating user');
             res.redirect('back');
         }else{
-            res.redirect('/user/'+updatedUser._id);
+          if(req.file){
+            await cloudinary.v2.uploader.destroy(updatedUser.imageId);  
+            let result = await cloudinary.v2.uploader.upload(req.file.path);
+            updatedUser.imageId= result.public_id;
+            updatedUser.avatar=result.secure_url;
+          }
+          updatedUser.firstname = req.body.user.firstname;
+          updatedUser.lastname = req.body.user.lastname;
+          updatedUser.email = req.body.user.email;
+          updatedUser.save();
+          res.redirect('/user/'+updatedUser._id);
         }
     })
 });
