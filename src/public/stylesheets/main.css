@@ -1,0 +1,22 @@
+
+.img-thumbnail img{
+    width: 100%;
+}
+.img-thumbnail{
+    padding: 0;
+}
+.img-thumbnail .caption-full{
+     padding: 9px;
+}
+.UserShow{
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.MarginTop10{
+    margin-top: 10px;
+}
+
+.CenterText{
+    text-align: center;
+}

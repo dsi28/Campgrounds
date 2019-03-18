@@ -1,0 +1,85 @@
+<% include ../partials/header.ejs %>
+<div class='container UserShow'>
+    <div class='row'>
+        <div class='col-md-4'>
+            <div class='img-thumbnail'>
+                <img  class='img-fluid' src='<%= user.avatar %>'>
+                <div class='caption-full'>
+                    <div class='container'>
+                        <h4 class='float-right'></h4>
+                        <%if(typeof user.lastname   != 'undefined' && typeof user.firstname != 'undefined'){%>
+                            <h4><a ><%= user.firstname + ' ' +user.lastname %></a></h4>
+                        <%}else if(typeof user.firstname != 'undefined'){%>
+                        <h4><a ><%= user.firstname%></a></h4>
+                        <%}else{}%>
+                        <p>User Name: <%=user.username%></p>
+                        <%if(user.isAdmin){%>
+                            <p>Site Admin</p>
+                        <%}else{%>
+                            <p>Standard User</p> 
+                        <%}%>
+                        <div class='row'>
+                            <div class='col-md-12'>
+                                <%if(currentUser && ( user._id.equals(currentUser._id) || currentUser.isAdmin)  ){%>
+                                    <p><%=user.email%><p>
+                                    <p><a href='/user/<%=user._id%>/reset'>Reset Password<a><p>
+                                        <a class='btn btn-lg btn-block btn-outline-warning' href='/user/<%=user._id%>/edit'>Edit</a>
+                                <%}else{%>
+                                        <a class='btn btn-lg btn-block btn-outline-info'>Message</a>
+                                <%}%>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class='col-md-8'>
+            <div class='card card-body bg-light'>
+            <%if(campgrounds.length ===0){%>
+                <h3>No campgrounds yet</h3>
+            <%}%>
+            <%if( currentUser && (user._id.equals(currentUser._id) || currentUser.isAdmin)){%> 
+            <div>
+                <a class='btn btn-block btn-success float-right' href='/campgrounds/new'>Add New Campground</a>
+            </div>
+            <hr>
+            <%}%>
+            <% campgrounds.forEach((campground)=>{%>
+                <div class='row'>
+                    <div class='col-md-12'>
+                        <div class='img-thumbnail'>
+                            <img  class='img-fluid' src='<%= campground.image %>'>
+                            <div class='caption-full'>
+                                <a href='/campgrounds/<%=campground._id%>'><%=campground.name%></a>
+                                <span class='float-right'><%=moment(campground.createdAt).fromNow()%></span>
+                                <p><%=campground.description%></p>
+                                <%if(currentUser && (campground.author.id.equals(currentUser._id) || currentUser.isAdmin )){%>
+                                <div class='container'>
+                                    <div class='row'>
+                                        <div class='col-md-12'>
+                                            <%if( user._id.equals(currentUser._id) || currentUser.isAdmin){%>
+                                                <a class='float-left btn btn-sm btn-warning' href='/campgrounds/<%=campground._id%>/edit'>Edit</a>
+                                                <form class='float-right' method='POST' action='/campgrounds/<%=campground._id%>?_method=DELETE'>   
+                                                    <button type='submit' class='btn btn-sm btn-danger'>Delete</button>    
+                                                </form>
+                                            <%}%>
+                                        </div>
+                                    </div>
+                                </div>
+                                <%}else{}%>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+                <hr>
+            <%})%>
+            <%if(currentUser && (user._id.equals(currentUser._id) || currentUser.isAdmin)){%>
+            <div>
+                <a class='btn btn-block btn-success float-right' href='/campgrounds/new'>Add New Campground</a>
+            </div>
+            <%}%>
+            </div>
+        </div>
+    </div>
+</div>
+<% include ../partials/footer.ejs %>
